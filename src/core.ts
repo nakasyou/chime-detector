@@ -97,6 +97,8 @@ export const startDetection = async (
     let chimeCount = 0
     let noChimeSum = 0
     let noChimeCount = 0
+
+    const scoreHistory: number[] = []
     for (let i = rangeStart; i < rangeEnd; i++) {
       if (CHIME_FREQUENCIE_INDEXES.includes(i)) {
         chimeSum += dataArray[i]
@@ -117,14 +119,21 @@ export const startDetection = async (
     }
     // チャイムなったかどうか判定
     const last10ChimeAvr = lastData.slice(-10).reduce((sum, data) => sum + data.chimeAvr, 0) / 10
-    const last10NoChimeAvr = lastData.slice(-10).reduce((sum, data) => sum + data.noChimeAvr, 0) / 10
+    //const last10NoChimeAvr = lastData.slice(-10).reduce((sum, data) => sum + data.noChimeAvr, 0) / 10
 
-    const score = last10ChimeAvr / last10NoChimeAvr
+    const score = last10ChimeAvr // last10NoChimeAvr
+    scoreHistory.push(score)
+    const scoreHistoryAvr = lastData.slice(-10).reduce((sum, data) => sum + data.noChimeAvr, 0) / 10
 
-    if (score > 2) {
+    const normScore = score / scoreHistoryAvr
+    if (normScore > 2) {
       // チャイムが鳴った
       const chimeTime = lastData.at(-10)!.time // 鳴った時刻
       listener(chimeTime)
+    }
+
+    if (scoreHistory.length > 600) {
+      scoreHistory.shift()
     }
 
     if (cleanupped) {
