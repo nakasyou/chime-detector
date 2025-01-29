@@ -1,7 +1,21 @@
+/**
+ * @module
+ * @example
+ * ```ts
+ * const stop = await startDetection((t) => console.log('Chime detected', t))
+ * ```
+ */
+
+/**
+ * Main
+ * @param listener Listener
+ * @param getTime A function to get time
+ * @returns A function to stop detection
+ */
 export const startDetection = async (
   listener: (soundedTime: number) => void,
   getTime: () => number = () => performance.now()
-) => {
+): Promise<() => void> => {
   const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
 
   const audioContext = new AudioContext()

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://jsr.io/schema/config-file.v1.json",
+  "name": "@ns/chime-detector",
+  "version": "0.1.0",
+  "exports": "./src/core.ts",
+  "license": "MIT",
+  "publish": {
+    "include": [
+      "src/core.ts",
+      "README.md"
+    ]
+  }
+}
